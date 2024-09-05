@@ -1,0 +1,98 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct node {
+    int priority;
+    int info;
+    struct node *next;
+} N;
+
+N *start = NULL;
+
+// Function prototypes
+void insert();
+void del();
+void display();
+
+int main() {
+    int ch;
+    do {
+        printf("\n[1] INSERTION\t[2] DELETION\t[3] DISPLAY\t[4] EXIT\t: ");
+        scanf("%d", &ch);
+        switch(ch) {
+            case 1: 
+                insert(); 
+                break;
+            case 2: 
+                del(); 
+                break;
+            case 3: 
+                display(); 
+                break;
+            case 4: 
+                break;
+            default: 
+                printf("Invalid choice!\n");
+        }
+    } while(ch != 4);
+    return 0;
+}
+
+// Insert function for priority queue
+void insert() {
+    int item, itprio;
+    N *new_node = (N *)malloc(sizeof(N));
+    printf("Enter the element to be inserted: ");
+    scanf("%d", &item);
+    printf("Enter its priority: ");
+    scanf("%d", &itprio);
+
+    new_node->info = item;
+    new_node->priority = itprio;
+    new_node->next = NULL;
+
+    // Inserting into an empty queue
+    if (start == NULL) {
+        start = new_node;
+    }
+    // Insert at the start if new node has higher or equal priority
+    else if (itprio <= start->priority) {
+        new_node->next = start;
+        start = new_node;
+    }
+    // Insert in the correct position based on priority
+    else {
+        N *q = start;
+        while (q->next != NULL && q->next->priority <= itprio) {
+            q = q->next;
+        }
+        new_node->next = q->next;
+        q->next = new_node;
+    }
+}
+
+// Delete function for priority queue
+void del() {
+    if (start == NULL) {
+        printf("\nQueue underflow\n");
+    } else {
+        N *temp = start;
+        printf("\nDeleted item is %d\n", temp->info);
+        start = start->next;
+        free(temp);
+    }
+}
+
+// Display function for priority queue
+void display() {
+    if (start == NULL) {
+        printf("Queue is empty\n");
+    } else {
+        N *temp = start;
+        printf("Queue is:\n");
+        while (temp != NULL) {
+            printf("\nElement = %d | Priority = %d\n", temp->info, temp->priority);
+            temp = temp->next;
+        }
+    }
+}
